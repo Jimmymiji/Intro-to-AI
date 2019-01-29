@@ -538,7 +538,68 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    # first try : inconsistent
+    # pos = position
+    # foodList = foodGrid.asList()
+    # ans = 0 
+    # while foodList:
+    #     dists = []
+    #     for f in foodList:
+    #         dists.append(abs(f[0] - pos[0]) + abs(f[1] - pos[1]))
+    #     min_dist = min(dists)
+    #     ans += min_dist
+    #     pos = foodList[dists.index(min_dist)]
+    #     foodList.pop(dists.index(min_dist))
+    
+    # second try: 13898
+    # pos = position
+    # foodList = foodGrid.asList()
+    # ans = 0 
+    # dists = []
+    # if not foodList:
+    #     return 0
+    # for f in foodList:
+    #     dists.append(abs(f[0] - pos[0]) + abs(f[1] - pos[1]))
+    # ans = min(dists)
+
+    def sortByX(pos):
+        return pos[0]
+    
+    def sortByY(pos):
+        return pos[1]
+    
+    pos = position
+    foodList = foodGrid.asList()
+    ans = 0 
+    dists = []
+    if not foodList:
+        return 0
+    if len(foodList) < 3:
+        while foodList:
+            dists = []
+            for f in foodList:
+                dists.append(abs(f[0] - pos[0]) + abs(f[1] - pos[1]))
+            min_dist = min(dists)
+            ans += min_dist
+            pos = foodList[dists.index(min_dist)]
+            foodList.pop(dists.index(min_dist))
+    else:
+        corners = []
+        foodList.sort(key = sortByX)
+        foodList.sort(key = sortByY)
+        corners.append(foodList[0])
+        corners.append(foodList[-1])
+        while corners:
+            dists = []
+            for f in corners:
+                dists.append(abs(f[0] - pos[0]) + abs(f[1] - pos[1]))
+            min_dist = min(dists)
+            ans += min_dist
+            pos = corners[dists.index(min_dist)]
+            corners.pop(dists.index(min_dist))
+    return ans
+
+
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -564,7 +625,7 @@ class ClosestDotSearchAgent(SearchAgent):
         food = gameState.getFood()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-
+        return search.uniformCostSearch(problem)
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
@@ -602,6 +663,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
+        foodList = self.food.asList()
+        return state in foodList
         util.raiseNotDefined()
 
 ##################
