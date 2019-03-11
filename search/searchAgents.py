@@ -568,6 +568,7 @@ def foodHeuristic(state, problem):
     def sortByY(pos):
         return pos[1]
     
+    
     pos = position
     foodList = foodGrid.asList()
     ans = 0 
@@ -586,6 +587,10 @@ def foodHeuristic(state, problem):
     else:
         corners = []
         foodList.sort(key = sortByX)
+        foodList.sort(key = sortByY)
+        corners.append(foodList[0])
+        corners.append(foodList[-1])
+        foodList.sort(key = sortByX,reverse=True)
         foodList.sort(key = sortByY)
         corners.append(foodList[0])
         corners.append(foodList[-1])
